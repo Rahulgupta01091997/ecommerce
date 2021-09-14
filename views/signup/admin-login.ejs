@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin Login</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/main.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="background-color: #fff;">
+<nav class="navigation" style="height:90px;">
+    <div class="container-fluid" style="display: flex;">
+        <div class="navigation__column left" style="width:30%;"></div>
+        <div class="navigation__column center" style="width:40%;">
+            <div class="header__logo">
+                <a class="ps-logo" href="/"style="padding-top: 15px; display: inline-block; max-width: 200px; line-height: 55px;">
+                    <h1>Book Store</h1>
+                </a>
+            </div>
+        </div>
+        <div class="navigation__column right" style="width:30%;"></div>
+    </div>
+    </nav>
+
+<section id="form"><!--form-->
+    <div class="container">
+        <div class="row">
+            <div class="vendor-login-form-outer">
+                <div class="login-form"><!--login form-->
+                    <h2>Admin Login</h2>
+                    <form name="loginform" id="adminloginForm" autocomplete="off">
+                        <input type="email" name="login_email" placeholder="Email Address" required/>
+                        <input type="password" name="login_pass" placeholder="Password" required/>
+                        <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="incorrectpass">
+                          <span>Length of the password must be minimum 8</span>
+                        </span>
+                        <button class="btn btn-default">Login</button>
+                        <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="login">
+                          <span>Invalid Email-id or Password entered</span>
+                        </span>
+                    </form>
+                </div><!--/login form-->
+            </div>
+        </div>
+    </div>
+</section><!--/form-->
+
+<%- include('../static/footer') -%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/admin-login.js" ></script>
+</body>
+</html>

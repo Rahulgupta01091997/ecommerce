@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="images/logo-white/favicon.png" rel="icon">
+    <title>Cart</title>
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<body>
+    <div class="header--sidebar"></div>
+    <%- include('../static/header',{userlogin : user ? user.userName : ''}) %><br>
+        <center>
+            <h3>-- Cart --</h3>
+        </center>
+        <br>
+        <div  style="margin: 1rem;">
+            <% if(cartDetails.length){ %>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th><h4>Product</h4></th>
+                        <th><h4>Price</h4></th>
+                        <th><h4>Quantity</h4></th>
+                        <th><h4>Total</h4></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <% 
+                  totalPrice = 0
+                  for(i=0; i < cartDetails.length; i++){
+                    product=productObject.find(x=>x._id==cartDetails[i].productID)
+                    totalPrice += product.Price * cartDetails[i].quantity
+                    %><tr>
+                    <td>
+                      <a href="<%= '/product/'+product._id %>">
+                        <img src="<%= product.Image %>" alt="<%= product.Title %>" style="height: 60px;object-fit: contain;width: 60px;">
+                        <%= product.Title %>
+                      </a>
+                    </td>
+                    <td style="padding-top: 25px;"><span style="color: green;"> $<%= product.Price %></span></td>
+                    <td>
+                        <button onclick="updateQuantity('<%=cartDetails[i]._id%>',-1)"><i class="fa fa-minus"></i></button>
+                        <input type="number" id="quantity-<%=cartDetails[i]._id%>" value="<%= cartDetails[i].quantity%>" style="width: 30px;" disabled>
+                        <button onclick="updateQuantity('<%=cartDetails[i]._id%>',1)"><i class="fa fa-plus"></i></button>
+                    </td>
+                    <td>
+                        <span style="color: green;"> 
+                            $<span id="totprice-<%=cartDetails[i]._id%>" class="totprice"><%= product.Price * cartDetails[i].quantity%></span>
+                        </span>
+                    </td>
+                    <input type="hidden" value="<%= product.Price%>" id="price-<%=cartDetails[i]._id%>">
+                    <td style="padding-top: 20px;">
+                        <button class="btn btn-danger" onclick="removeFromCart('<%= cartDetails[i]._id %>')">Delete</button>
+                    </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+              </table>
+              <h3>Total Price : $<span id="cartprice"><%= totalPrice.toFixed(2)%></span></h3>
+              <a href="/checkout" class="btn btn-register signup-desktop-view" style="float: right;">Proceed To Checkout</a><br>
+            <%} else{%>
+                <center>Nothing in cart</center>
+            <% } %>
+        </div>
+    <br>
+    <%- include("../static/footer")%>
+    <script type="text/javascript" src="plugins/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script>
+        function updateQuantity(id,flag){
+            quantity = parseInt($("#quantity-"+id).val()) + flag
+            price = parseFloat($("#price-"+id).val())
+            if(quantity>0){
+                totprice = 0
+                $.ajax({
+                    url:"/updateCartQuantity",
+                    type:"post",
+                    async:false,
+                    data: {
+                        id : id,
+                        quantity : quantity,
+                    },
+                    success:function(data){
+                        $("#quantity-"+id).val(quantity)
+                        $("#totprice-"+id).html(price*quantity)
+                        $(".totprice").each((i,x)=>{
+                            totprice += parseFloat($(x).text())
+                        })
+                        $("#cartprice").html(totprice.toFixed(2))
+                    }
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>

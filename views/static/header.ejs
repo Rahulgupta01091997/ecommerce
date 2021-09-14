@@ -1,0 +1,66 @@
+<header class="header">
+    <nav class="navigation">
+      <div class="container-fluid" style="background: #2ac37d;">
+        <div class="navigation__column left">
+          <div class="header__logo">
+            <a href="/"><h1  style="color:white;margin: 15px 0;">Book Store</h1></a>
+          </div>
+        </div>
+        <div class="navigation__column right">
+          <form class="ps-search--header" action="/search" method="GET">
+            <input class="form-control" type="text" name="searchTerm" placeholder="Search here.." autocomplete="off">
+            <button type="submit"><i class="ps-icon-search"></i></button>
+          </form>
+          <% if(userlogin == ""){%>
+            <div style="padding:2rem">
+            <a type="button" class="btn btn-register signup-desktop-view" href="/register">Sign up</a>
+            <a type="button" class="btn btn-register signup-desktop-view" href="/register">Sign in</a>
+          </div>
+          <% } else{ %>
+          <div class="profile-section">
+          <div id="dropdownMenuButton dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="profile-img-constainer dropdown-toggle"><img src="/images/user/user-default-pic.png"  class="profile--icon"></div>
+          <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item"><b><%= userlogin%></b></a></li>
+            <li><a class="dropdown-item" href="/profile">My Profile</a></li>
+            <li><a class="dropdown-item" href="/myorders">My Orders</a></li>
+            <li><a class="dropdown-item" href="/cart">Cart</a></li>
+            <li><a class="dropdown-item" href="/logout">Logout</li>
+          </div>
+          </div>
+          <% } %>
+          <div class="menu-toggle"><span></span></div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div class="header__top">
+    <div class="navigation__column center categories-center">
+      <ul class="main-menu menu">
+        <% if(userlogin == ""){%>
+        <a type="button" class="btn btn-register signup-mobile-view" href="/register">Sign up</a>
+        <% }else{ %>
+          <div class="profile-container-mobile">
+            <div class="profile-img-constainer profile-mobile-view">
+              <img src="/images/user/user-default-pic.png"  class="profile--icon">
+            </div>
+            <li class="menu-item"><a><%= userlogin%></a></li>
+            <li class="menu-item"><a href="#">My Profile</a></li>
+            <li class="menu-item"><a href="#">My Orders</a></li>
+          </div>
+        <% } %>
+      </ul>
+</div>
+</div>
+
+<script>
+window.addEventListener( "pageshow", function ( event ) {
+  var historyTraversal = event.persisted || 
+                         ( typeof window.performance != "undefined" && 
+                              window.performance.navigation.type === 2 );
+  if ( historyTraversal ) {
+    // Handle page restore.
+    window.location.reload();
+  }
+});
+
+</script>

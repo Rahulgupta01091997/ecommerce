@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Review Page - Admin</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/vendordash.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+</head>
+
+<body id="reportsPage">
+    <% if((typeof user.userName!='undefined') && (user.isVendor)){ %>
+      <%- include('../static/adminHeader'); -%>
+      <!-- ----------------------------------TOAST FOR BRAND DELETION---------- 
+      <div class="toastsuccess" id="branddeltoast" style="z-index: 5;">
+        <i class="fa fa-check toasticon" style="font-size: 20px;color: #fff;margin-right: 5px;"></i> Brand Deleted
+      </div>
+      <div class="toastfail" id="branddelfailtoast" style="z-index: 5;">
+        <i class="fa fa-close toasticon" style="font-size: 20px;color: #fff;"></i> Failed to Delete Brand
+      </div>-->
+    <div class="" id="home">
+        <div class="container vendorcontainer">
+            <!-- row -->
+            <div class="row book-content-row">
+                <div class="col-12 book-block-col">
+                    <div class="book-bg-primary-dark book-block book-block-taller" id="reviewcontainer">
+                        <% prodObject = prodObject.filter(x=>reviewObject.map(y=>y.productID).indexOf(x._id) > -1) %>
+                        <%  for(i=0;i < prodObject.length; i++) { %>
+                            <% var currentreview = reviewObject.filter(x=>x.productID == prodObject[i]._id) %>
+                            <button class="accordion"><%= prodObject[i].Title %></button>
+                            <div class="panel">
+                                <table class="table table-hover book-table-small book-product-table" style="table-layout:fixed;">
+                                    <thead>
+                                        <tr>
+                                          <th scope="col" style="width: 15%; padding: 15px 25px;">Name</th>
+                                          <th scope="col" style="width: 44%; padding: 15px 25px;">Review</th>
+                                          <th scope="col" style="width: 7%;">Rating</th>
+                                          <th scope="col" style="width: 14%; padding: 15px 25px;">IP</th>
+                                          <th scope="col" style="width: 20%; padding: 15px 45px;">Status</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <% for(j=0; j < currentreview.length; j++) { %>
+                                        <div class="panelinside">
+                                            <% var username = userObject.find(x=>x._id == currentreview[j].userID) %>
+                                            <% if(username){ %>
+                                                    <div class="reviewuser" id="userid-<%= currentreview[j]._id%>"><p><%= username.userName %></p></div>
+                                            <% } else { %>
+                                                <div class="reviewuser" id="userid-<%= currentreview[j]._id%>"><p>Unknown</p></div>
+                                            <% } %>
+                                            <div class="reviewgiven ellipsis-forany" id="review-<%= currentreview[j]._id%>"><p><%= currentreview[j].review %></p></div>
+                                            <div class="reviewrating" id="rating-<%= currentreview[j]._id%>"><p><%= currentreview[j].rating %>/5</p></div>
+                                            <div class="reviewip" id="ip-<%= currentreview[j]._id%>"><p><%= currentreview[j].ip %></p></div>
+                                            <div class="reviewaccrej" id="accrej-<%= currentreview[j]._id%>">
+                                                <% if(currentreview[j].isVerified == "false"){ %>
+                                                    <div class="accept" style="width: 49%;"><i class="fa fa-check acceptrev" title="accept review" onclick="reviewstatus('1', '<%= currentreview[j]._id %>')"></i></div>
+                                                    <div class="accept" style="width: 49%;"><i class="fa fa-times rejectrev" title="reject review" onclick="reviewstatus('0', '<%= currentreview[j]._id %>')"></i></div>
+                                                <% } else if(currentreview[j].isVerified == 1) { %>
+                                                    <p style="width: 100%; text-align: center;">Accepted</p>
+                                                <% } else { %>
+                                                    <p style="width: 100%; text-align: center;">Rejected</p>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                        <% if( !prodObject.length ){ %>
+                            <div class="panelinside">
+                                <p style="margin-bottom: 0px;color:#fff;text-align: center;">No Reviews Added for Any Products Yet</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include('../static/adminFooter'); -%>
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="js/vendor.js"></script>
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+    
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        } 
+      });
+    }
+</script>
+
+<%} else { %>
+    <center><a href="/admin-login" style="margin: auto; color: #fff;">Please Login First<n/a></center>
+    <% } %>
+</body>
+
+</html>

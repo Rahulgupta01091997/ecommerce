@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Manage User - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/vendordash.css">
+    <style>
+      .toast{
+        border: 1px solid gray;
+        padding: 10px;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: white;
+        z-index: 1000;
+        border-radius: 5px;
+        display: none;
+      }
+      #error-toast {
+        background-color: red;
+        color: white;
+      }
+      #success-toast {
+        background-color: #2AC37D;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body id="reportsPage">
+    <% if((typeof user.userName!='undefined') && (user.isVendor)){ %>
+      <%- include('../static/adminHeader'); -%>
+      <!-- ----------------------------------TOAST FOR User DELETION---------- -->
+      <div class="toastsuccess" id="proddeltoast">
+        <i class="fa fa-check toasticon" style="font-size: 20px;color: #fff;margin-right: 5px;"></i> Product Deleted
+      </div>
+      <div class="toastfail" id="proddelfailtoast">
+        <i class="fa fa-close toasticon" style="font-size: 20px;color: #fff;"></i> Failed to Delete Product
+      </div>
+      <!-- -------------------------------TOAST FOR User Addition------------------- -->
+      <div class="toastsuccess" id="catupdatetoast">
+        <i class="fa fa-check toasticon" style="font-size: 20px;color: #fff;margin-right: 5px;"></i> Category Updated
+      </div>
+      <div class="toastfail" id="catupdatefailtoast">
+        <i class="fa fa-close toasticon" style="font-size: 20px;color: #fff;"></i> Failed to Update Category
+      </div>
+      <!-- -------------------------------------END OF ALL TOASTS----------- -->
+    <div class="container-fluid mt-5">
+      <div class="row book-content-row ">
+        <div class="productsleftdiv" style="width: 66.66%;">
+
+          <div class="col-sm-12 col-md-12 book-block-col ">
+            <div class="book-bg-primary-dark book-block book-block-products" style="min-height: 100px;">
+              <div class="book-product-table-container ">
+                <table class="table table-hover book-table-small book-product-table" style="table-layout:fixed;">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="width: 5%;">&nbsp;</th>
+                      <th scope="col" style="width: 40%;">User Name</th>
+                      <th scope="col" style="width: 40%;">Email</th>
+                      <th scope="col" style="width: 15%;">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class='tbody'>
+                    <% for(i=0;i < userObject.length;i++){ %>
+                      <% if(userObject[i].isVendor){
+                        continue
+                      } else { %>
+                        <tr class='classrow' id='abc'>
+                          <th scope="row"></th>
+                          <td class="book-product-name" ><%= userObject[i].userName %></td>
+                          <td id='row_value' ><%= userObject[i].userEmail%></td>
+                          <td id='row_trash' style="text-align: center;">
+                            <a class="book-product-delete-link" onclick="deleteuser('<%= userObject[i]._id %>')">
+                              <i class="far fa-trash-alt book-product-delete-icon"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      <% } %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="productsrightdiv" style="width: 33.33%;">
+          <div class="col-sm-12 col-md-12 book-block-col">
+            <div class="book-bg-primary-dark book-block book-block-product-categories ">
+              <h2 class="book-block-title ">New User</h2>
+              <div class="book-product-table-container" style="margin-bottom: 0px;"> 
+                <div class="signup-form">
+                  <form name="eshopform" id="newuserForm" autocomplete="off">
+                    <input type="text" name="name" placeholder="Name" autocomplete="off" required/>
+                      <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="fullname">
+                        <span>Please enter valid Name</span>
+                      </span>
+                      <input type="email" name="email" placeholder="Email Address" autocomplete="off" required/>
+                      <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="email">
+                        <span>This Email Address already exists</span>
+                      </span>
+                    <input type="password" name="password" placeholder="Password" autocomplete="off" required/>
+                      <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="password">
+                        <span>Length of the password must be minimum 8</span>
+                      </span>
+                      <p class="register-terms" style="color: #fff;">By creating an account you agree to our <a href="/Terms" style="color:dodgerblue;text-decoration: none;">Terms & Privacy</a>.</p>
+                    <button class="btn btn-primary btn-block text-uppercase mb-3">Add new User</button>
+                  </form>
+                </div>
+              </div>
+              <!-- table container -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    <!-- Toast Message for success or error -->
+    <div class="toast" id="success-toast" data-autohide="false">
+      <div class="toast-header" id="success-toast-content">
+      </div>
+    </div>
+
+    <div class="toast" id="error-toast" data-autohide="false">
+      <div class="toast-header" id="error-toast-content">
+      </div>
+    </div>
+    
+    <%- include('../static/adminFooter'); -%>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/vendor.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <%} else { %>
+    <center><a href="/admin-login" style="margin: auto; color: #fff;">Please Login First<n/a></center>
+    <% } %>
+  </body>
+</html>
+
+

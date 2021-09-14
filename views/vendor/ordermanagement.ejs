@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Order Management - Admin</title>
+   <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/vendordash.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+  </head>
+
+  <body id="reportsPage">
+    <% if((typeof user.userName!='undefined') && (user.isVendor)){ %>
+      <%- include('../static/adminHeader'); -%>
+      <div class="container-fluid  text-white">
+        <div class="row book-content-row ">
+          <div class="col-sm-12 col-md-12 book-block-col orderpadding">
+            <div class="book-bg-primary-dark book-block book-block-products ordermamnagementTable" style="min-height: 100px;">
+              <div class="book-product-table-container ">
+                <table class="table table-hover book-table-small book-product-table" style="table-layout: fixed;">
+                  <thead>
+                    <tr class="text-center">
+                      <th scope="col">Username</th>
+                      <th scope="col">Book Name</th>
+                      <th scope="col">Author </th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Status</th>
+                      <!-- <th scope="col">Coupon</th>
+                      <th scope="col">Total</th> -->
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(i=0;i < orderdetail.length ;i++){ %>
+                      <tr class="text-center">
+                        <% for(j=0; j < userdata.length; j++){ %>
+                          <% if(orderdetail[i].userID == userdata[j]._id){ %>
+                            <td scope="col"><%= userdata[j].userName %></td>
+                          <% } %>
+                        <% } %>
+                        <% for(j=0; j < productDetailsObject.length; j++){ %>
+                          <% if(orderdetail[i].productID == productDetailsObject[j]._id){ %>
+                            <th scope="col"><%= productDetailsObject[j].Title  %></th>
+                            <th scope="col"><%= productDetailsObject[j].Author %></th>
+                            <th scope="col"><%= productDetailsObject[j].Price %></th>
+                          <% } %>
+                        <% } %>
+                        <td scope="col">
+                          <select class=" custom-select1 border border-light rounded select_opt1" id='status' onchange="changestatus(value,'<%= orderdetail[i]._id %>,<%=  orderdetail[i].orderstatus %>')">
+                              <option selected ><%=  orderdetail[i].orderstatus %></option>
+                              <option value="Accepted" >Accepted</option>
+                              <option value="Rejected">Rejected</option>
+                          </select>
+                        </td>
+                      </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <%- include('../static/adminFooter'); -%>
+    <!-- display the content of the -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/vendor.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <%} else { %>
+    <center><a href="/admin-login" style="margin: auto; color: #fff;">Please Login First<n/a></center>
+  <% } %>
+  </body>
+</html>

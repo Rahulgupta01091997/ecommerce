@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="../../">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        <%= productObject.Title %>
+    </title>
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="plugins/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.2.0/jquery.rateyo.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+
+
+<body class="ps-loading">
+    <div class="header--sidebar"></div>
+    <%- include('../static/header',{userlogin : user ? user.userName : ''}) %>
+        <main class="ps-main">
+            <div class="ps-product--detail pt-60">
+                <div class="ps-container" style="width: 100%; padding: 0;">
+                    <div class="row">
+                        <div class="col-lg-10 col-md-12 col-lg-offset-1">
+                            <div class="col-md-6" style="text-align: center;">
+                                <img class="zoom" src="<%=productObject.Image%>" alt="<%= productObject.Title %>" data-zoom-image="<%=productObject.Image%>" style="margin: 0 auto;max-width: 45%;object-fit: contain;">
+                            </div>
+                            <div class="col-md-6">
+                                <h1>
+                                    <%= productObject.Title %>
+                                </h1>
+                                <p style="margin-top: 10px;">
+
+                                    <%= productObject.Category%>
+                                        ,
+
+                                        <%= productObject.Author%>
+                                </p>
+                                <h3>$
+                                    <%= productObject.Price%>
+                                </h3>
+                                <div>
+                                    <h4>Details</h4><br>
+                                    <p>
+                                        <%= productObject.Desc%>
+                                    </p>
+                                </div>
+                                <div>
+                                    <div class="btn-add-to-cart-<%- productObject._id%>">
+                                        <%
+                          if(inCart){%>
+                                            <a class="btn btn-register signup-desktop-view" style="float: left; margin-right: 0px;margin-top: 10px;background-color: #2AC37D; color: white;" href="/cart">
+                                                View Cart
+                                            </a>
+                                            <% } else {%>
+                                                <a class="btn btn-register signup-desktop-view" style="float: left; margin-right: 0px;margin-top: 10px;background-color: #2AC37D; color: white;" <% if(user=='' ){ %> href="/register" <% } else{ %> onclick="addToCart('<%- productObject._id%>')" <% } %>>Place Order</a>
+                                                <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% reviewDetailsF = reviewDetails.body.filter(x=>reviewedUsers.findIndex(u => u._id == x.userID) >-1 && x.isVerified == "1") %>
+                            <div class="col-md-12 tab-content mb-100">
+                                <div class="tab-pane active" role="tabpanel" id="tab_02">
+                                    <p class="mb-20">
+                                                <%= reviewDetailsF.length %> reviews for <strong><%= productObject.Title %></strong>
+                                                    <% 
+                                    var myReview = reviewDetails.body.find(x=> x.userID==user._id);
+                                    isReviewed= myReview ? true : false;
+                                    if(isReviewed){ %>
+                                                        <button type="button" class="btn btn-register signup-desktop-view" style="float: right;" data-toggle="collapse" data-target="#review-form">Edit your Review</button>
+                                                        <% } %>
+                                    </p>
+                                    <% if(isOrdered){ 
+                                    if(isReviewed){%>
+                                        <form class="ps-product__review collapse" id="review-form" onsubmit="return false;" method="post" hidden>
+                                            <%}else{ %>
+                                                <form class="ps-product__review" onsubmit="return false;" method="post">
+                                                    <% } %>
+                                                        <h4>ADD YOUR REVIEW</h4>
+                                                        <div class="row">
+                                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 user-rate">
+                                                                <div class="form-group">
+                                                                    <label>Your rating<span></span></label>
+                                                                    <div class="ps-new-rating">
+                                                                    </div>
+                                                                    <input type="hidden" name="rating" value="<%= (isReviewed ? myReview.rating: '' )%>" id="newrating">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 ">
+                                                                <div class="form-group">
+                                                                    <label>Your Review:</label>
+                                                                    <textarea name="review" class="form-control" rows="6"><%= (isReviewed ? myReview.review: '' )%></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button class="ps-btn ps-btn--sm" onclick="addReview()">Submit<i class="ps-icon-next"></i></button>
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" name="productID" value="<%= productObject._id%>">
+                                                        </div>
+                                                </form>
+                                                <% }
+                                  for(i = 0; i < reviewDetails.body.length; i++){ 
+                                    var revUser= reviewedUsers.find(u => u._id == reviewDetails.body[i].userID)
+                                    var isrevUser= revUser ? true : false;%>
+
+                                                    <% if(isrevUser && reviewDetails.body[i].isVerified == "1" ){ %>
+                                                        <div class="ps-review">
+                                                            <div class="ps-review__content">
+                                                                <div class="ps-review__thumbnail">
+                                                                    <img src="/images/user/user-default-pic.png" alt="">
+                                                                </div>
+                                                                <header>
+                                                                    <span class="overrateicon">
+                                                                        <% width = (reviewDetails.body[i].rating/5)*100%>
+                                                                            <span class="overrateiconfill" id="<%= (revUser._id == user._id ? 'myrating': '' )%>" style="width:<%- width%>%"></span>
+                                                                    </span>
+                                                                    <p>By <b> <%= revUser.userName%></b></p>
+                                                                </header>
+                                                                <p id="<%= (revUser._id == user._id ? 'myreview': '' )%>">
+                                                                    <%= reviewDetails.body[i].review %>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                <% }%>
+                                    <% }%>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <%- include('../static/footer') -%>
+        </main>
+
+        <!-- JS Library-->
+    <script type="text/javascript" src="plugins/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.2.0/jquery.rateyo.min.js"></script>
+    <!-- Custom scripts-->
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/productdetails.js"></script>
+</body>
+
+</html>

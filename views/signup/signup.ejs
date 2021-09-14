@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- <base href="../"> -->
+<meta charset="utf-8">
+<title>Register | Login</title> 
+<link href="css/fontawesome.min.css" rel="stylesheet">
+ <link href="css/main.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"> 
+<link rel="stylesheet" href="plugins/bootstrap/dist/css/bootstrap.min.css">
+</head><!--/head-->
+
+<body>
+<nav class="navigation" style="height:90px;">
+    <div class="container-fluid" style="display: flex;">
+        <div class="navigation__column left" style="width:30%;"></div>
+        <div class="navigation__column center" style="width:40%;">
+            <div class="header__logo">
+                <a class="ps-logo" href="/"style="padding-top: 15px; display: inline-block; max-width: 200px; line-height: 55px;">
+                    <h1>Book Store</h1>
+                </a>
+            </div>
+        </div>
+        <div class="navigation__column right" style="width:30%;"></div>
+    </div>
+    </nav>
+
+<section id="form"><!--form-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 login-form-outer" id="login-width">
+                <div class="login-form"><!--login form-->
+                    <h2>Login to your account</h2>
+                    <form name="loginform" id="signinForm" autocomplete="on">
+                        <input type="email" name="login_email" placeholder="Email Address" required/>
+                        <input type="password" name="login_pass" placeholder="Password" required/>
+                        <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="loginpass">
+                          <span>Length of the password must be minimum 8</span>
+                        </span>
+						<button class="btn btn-default responsivebtn">Login</button>
+						<span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="login">
+                            <span>Invalid Email-id or Password entered</span>
+                          </span>
+                    </form>
+                </div><!--/login form-->
+            </div>
+            <div class="col-sm-1 responsiveor" id="resor">
+                <h2 class="or">OR</h2>
+            </div>
+            <div class="col-sm-4 signup-form-outer" id="signup-width">
+                <div class="signup-form"><!--sign up form-->
+                    <h2>New User Signup!</h2>
+                    <form name="eshopform" id="signupForm" autocomplete="on">
+                        <input type="text" name="name" placeholder="Name" required/>
+                          <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="fullname">
+                            <span>Please enter valid Name</span>
+                          </span>
+						<input type="email" name="email" placeholder="Email Address" required/>
+						<span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="email">
+                            <span>This Email Address already exists</span>
+                          </span>
+                        <input type="number" maxlength="10" minlength="10" name="contact" placeholder="Contact" />
+                        <textarea name="address" placeholder="Address" rows="3"></textarea> 
+                        <input type="password" name="password" placeholder="Password" required/>
+                          <span class="ZAtlA-" style="color: #ff6161; font-size: 12px; font-weight: 500;display: none;" id="password">
+                            <span>Length of the password must be minimum 8</span>
+                          </span>
+                          <p class="register-terms">By creating an account you agree to our <a href="/Terms" style="color:dodgerblue;text-decoration: none;">Terms & Privacy</a>.</p>
+                        <button class="btn btn-default responsivebtn">Signup</button>
+                    </form>
+                </div><!--/sign up form-->
+            </div>
+        </div>
+    </div>
+</section><!--/form-->
+
+<%- include('../static/footer') -%>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/signup.js"></script>
+</body>
+</html>

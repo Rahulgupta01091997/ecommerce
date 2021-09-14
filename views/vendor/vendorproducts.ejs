@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Product Page - Admin</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/vendordash.css">
+    <style>
+      .toast{
+        border: 1px solid gray;
+        padding: 10px;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: white;
+        z-index: 1000;
+        border-radius: 5px;
+        display: none;
+      }
+      #error-toast {
+        background-color: red;
+        color: white;
+      }
+      #success-toast {
+        background-color: #2AC37D;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body id="productsPage">
+    <% if((typeof user.userName!='undefined') && (user.isVendor)){ %>
+      <%- include('../static/adminHeader'); -%>
+      <!-- ----------------------------------TOAST FOR MULTIPLE PRODUCTS DELETION---------- -->
+      <div class="toastsuccess" id="proddeltoast">
+        <i class="fa fa-check toasticon" style="font-size: 20px;color: #fff;margin-right: 5px;"></i> Product Deleted
+      </div>
+      <div class="toastfail" id="proddelfailtoast">
+        <i class="fa fa-close toasticon" style="font-size: 20px;color: #fff;"></i> Failed to Delete Product
+      </div>
+      <!-- -------------------------------TOAST FOR CATEGORY Updation------------------- -->
+      <div class="toastsuccess" id="catupdatetoast">
+        <i class="fa fa-check toasticon" style="font-size: 20px;color: #fff;margin-right: 5px;"></i> Category Updated
+      </div>
+      <div class="toastfail" id="catupdatefailtoast">
+        <i class="fa fa-close toasticon" style="font-size: 20px;color: #fff;"></i> Failed to Update Category
+      </div>
+      <!-- -------------------------------TOAST FOR CATEGORY DELETION------------------- -->
+      <div class="toastsuccess" id="catdeltoast">
+        <i class="fa fa-check toasticon" style="font-size: 20px;color: #fff;margin-right: 5px;"></i> Category Deleted
+      </div>
+      <div class="toastfail" id="catdelfailtoast">
+        <i class="fa fa-close toasticon" style="font-size: 20px;color: #fff;"></i> Failed to Delete Category
+      </div>
+      <!-- -------------------------------------END OF ALL TOASTS----------- -->
+    <div class="container-fluid mt-5">
+      <div class="row book-content-row ">
+        <div class="productsleftdiv" style="width: 66.66%;">
+
+          <div class="col-sm-12 col-md-12 book-block-col ">
+            <div class="book-bg-primary-dark book-block book-block-products" style="min-height: 100px;">
+              <div class="book-product-table-container ">
+                <table class="table table-hover book-table-small book-product-table" style="table-layout:fixed;">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="width: 50px;">&nbsp;</th>
+                      <th scope="col" style="width: 300px;">Book Name</th>
+                      <th scope="col" style="width: 150px;">Category</th>
+                      <th scope="col" style="width: 130px;">Author</th>
+                      <th scope="col" style="width: 90px;">Price</th>
+                      <th scope="col" style="width: 90px;">&nbsp;</th>
+                      <th scope="col" style="width: 90px;">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class='tbody'>
+                    <% for(i=0;i < productObject.length;i++){ %>
+                      <% var prodimages = [] %>
+                      <% prodimages.push(productObject[i].Image) %>
+                      <input type="hidden" id="prodimg-<%= productObject[i]._id%>" value="<%= prodimages %>" />
+                      <tr class='classrow' id='abc'>
+                        <th scope="row"><input type="checkbox" name="<%= productObject[i]._id%>" class='productcheckbox' value="<%= JSON.stringify(prodimages) %>"></th>
+                        <td class="book-product-name" ><%= productObject[i].Title %></td>
+                        <td id='row_value' ><%= productObject[i].Category%></td>
+                        <td > <%= productObject[i].Author %></td>  
+                        <td ><%= productObject[i].Price %></td>
+                        <td style="text-align: center;">
+                          <a href="editproduct/<%= productObject[i]._id %>" class="book-product-delete-link" id='editrow'>
+                            <i class="far fas fa-edit book-product-delete-icon"></i>
+                          </a>
+                        </td>
+                        <td id='row_trash' >
+                          <a class="book-product-delete-link" onclick="deleteproduct('<%= productObject[i]._id %>')">
+                            <i class="far fa-trash-alt book-product-delete-icon"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      <% } %>
+                  </tbody>
+                </table>
+              </div>
+              <!-- table container -->
+              <a href="/addproduct" class="btn btn-primary btn-block text-uppercase mb-3">Add new Book</a>
+              <a class="btn btn-primary btn-block text-uppercase mb-3" style="color: #fff;" onclick="deleteselectedProduct()">Delete selected products </a>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="productsrightdiv" style="width: 33.33%;">
+          <div class="col-sm-12 col-md-12 book-block-col">
+            <div class="book-bg-primary-dark book-block book-block-product-categories ">
+              <h2 class="book-block-title ">Categories</h2>
+              <div class="book-product-table-container">
+                <% for(i=0;i < categoryObject.length;i++){ %> 
+                <div id="accordion">
+                  <div class="card card_radius editcat">
+                    <div class="float-left">
+                      <div class='d-inline float-left category_header'> 
+                        <div class="custom-control custom-checkbox"> 
+                          <a class="card-link" data-toggle="collapse" href="#a<%= categoryObject[i]._id%>" name='a<%= categoryObject[i]._id%>'>
+                            <p class="text-light text-left d-inline category_header" contenteditable='false' id='updated_category-<%= categoryObject[i]._id%>' > <%= categoryObject[i].category %></p>
+                          </a>
+                        </div>
+                      </div>
+                      <div class=' d-inline float-right category_icon'> 
+                        <div class = 'd-inline float-right'>
+                          <div class = 'd-inline' id='trashcategorylist' onclick="deletecategorydb('<%= categoryObject[i]._id %>')">
+                            <a class="book-product-delete-link d-inline  float-right prod_icon ">
+                              <i class="far fa-trash-alt book-product-delete-icon"></i>
+                            </a>
+                          </div>
+                          <div class = 'd-inline' id='editcategorylist' onclick="editcategory(this)">
+                            <a class="book-product-delete-link d-inline-block icon_change float-right prod_icon"  >
+                              <i class="far fas fa-edit book-product-delete-icon"></i>
+                            </a>
+                          </div>
+                          <div class = 'd-inline div-hide' id='savecategorylist' onclick="savecategorydb(this,'<%= categoryObject[i]._id %>')">
+                            <a class="book-product-delete-link d-inline-block icon_change float-right prod_icon" >
+                              <i class="fa fa-check  book-product-delete-icon"></i>
+                            </a>
+                          </div>
+                      </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <% } %> 
+              </div>
+              <!-- table container -->
+              <button class="btn btn-primary btn-block text-uppercase mb-3" onclick="document.getElementById('id01').style.display='block'">
+                Add new category
+              </button>
+  <!-- Category modal -->
+              <div id="id01" class="modal">
+                <div class="toastsuccess" id="newcattoastvalid">
+                  <i class="fa fa-check toasticon" style="font-size: 20px;color: #fff;margin-right: 5px;"></i> Category Added
+                </div>
+                <div class="toastfail" id="newcattoastfailed">
+                  <i class="fa fa-close toasticon" style="font-size: 20px;color: #fff;"></i> Failed to Add Category
+                </div>
+                <form class="modal-content animate" id="addnewcategory">
+
+                  <div class="imgcontainer">
+                    <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                  </div>
+
+                  <div class="container catcontainer">
+                    <div class="form-group mb-3">
+                      <label
+                        for="name"
+                        >Add New Category
+                      </label>
+                      <input
+                        id="newCategory"
+                        name="newCategory"
+                        type="text"
+                        class="form-control validate modalinput"
+                        required
+                      />
+                    </div>
+                  </div>
+              
+                  <div class="container">
+                    <button class="btn btn-primary btn-block text-uppercase mb-3">
+                      Add new category
+                    </button>
+                  </div>
+                </form>
+              </div>
+  <!-- END OF CATEGORY  -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    <!-- Toast Message for success or error -->
+    <div class="toast" id="success-toast" data-autohide="false">
+      <div class="toast-header" id="success-toast-content">
+      </div>
+    </div>
+
+    <div class="toast" id="error-toast" data-autohide="false">
+      <div class="toast-header" id="error-toast-content">
+      </div>
+    </div>
+    
+    <%- include('../static/adminFooter'); -%>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/vendor.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <%} else { %>
+    <center><a href="/admin-login" style="margin: auto; color: #fff;">Please Login First<n/a></center>
+    <% } %>
+  </body>
+</html>
+
+

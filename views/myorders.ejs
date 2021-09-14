@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>My orders</title>
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  </head>
+  <body>
+    <div class="header--sidebar"></div>
+    <%- include('static/header',{userlogin : user ? user.userName : ''}) %><br>
+    <center><h3>-- My Ordered Books --</h3></center>
+    <br>
+    <div>
+      <% if(orders.length){ %>
+      <table class="table table-striped" style="margin: 1rem;">
+        <thead>
+          <th>Order ID</th>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Order Amount</th>
+          <th>Order Date</th>
+        </thead>
+        <tbody>
+          <% for(j=0; j < orders.length; j++){
+            product=productObject.find(x=>x._id==orders[j].productID)
+            %>
+            <tr>
+              <td><%= orders[j]._id%></td>
+              <td>
+                <a href="<%= '/product/'+product._id %>">
+                  <img src="<%= product.Image %>" alt="<%= product.Title %>" style="height: 60px;object-fit: contain;width: 60px;">
+                  <%= product.Title %>
+                </a>
+              </td>
+              <td><span style="color: green;"> $<%= product.Price %></span></td>
+              <td><%= orders[j].quantity%></td>
+              <td><span style="color: green;"> $<%= product.Price * orders[j].quantity%></span></td>
+              <td><%=orders[j].transactionDate%></td>
+              </tr>
+            <% } %>
+        </tbody>
+      </table>
+      <%} else{%>
+          <center>No orders found</center>
+      <% } %>
+      </div>
+    </main>
+    <br>
+    <%- include("static/footer")%>
+    <!-- JS Library-->
+    <script type="text/javascript" src="plugins/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+  </body>
+</html>
